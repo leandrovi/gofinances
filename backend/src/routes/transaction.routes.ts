@@ -2,12 +2,14 @@ import { Router } from 'express';
 
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import CreateTransactionService from '../services/CreateTransactionService';
+// import DeleteTransactionService from '../services/DeleteTransactionService';
+// import ImportTransactionsService from '../services/ImportTransactionsService';
 
-const transactionRouter = Router();
+const transactionsRouter = Router();
 
 const transactionsRepository = new TransactionsRepository();
 
-transactionRouter.get('/', (request, response) => {
+transactionsRouter.get('/', (request, response) => {
   try {
     const transactions = transactionsRepository.all();
     const balance = transactionsRepository.getBalance();
@@ -23,7 +25,7 @@ transactionRouter.get('/', (request, response) => {
   }
 });
 
-transactionRouter.post('/', (request, response) => {
+transactionsRouter.post('/', (request, response) => {
   try {
     const { title, value, type } = request.body;
 
@@ -39,4 +41,12 @@ transactionRouter.post('/', (request, response) => {
   }
 });
 
-export default transactionRouter;
+transactionsRouter.delete('/:id', async (request, response) => {
+  // TODO
+});
+
+transactionsRouter.post('/import', async (request, response) => {
+  // TODO
+});
+
+export default transactionsRouter;

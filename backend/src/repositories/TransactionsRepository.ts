@@ -1,3 +1,5 @@
+import { EntityRepository, Repository } from 'typeorm';
+
 import Transaction from '../models/Transaction';
 
 interface CreateTransactionDTO {
@@ -12,6 +14,7 @@ interface Balance {
   total: number;
 }
 
+@EntityRepository(Transaction)
 class TransactionsRepository {
   private transactions: Transaction[];
 
@@ -23,7 +26,7 @@ class TransactionsRepository {
     return this.transactions;
   }
 
-  public getBalance(): Balance {
+  public async getBalance(): Promise<Balance> {
     const income = this.totalBalanceTypeValue('income');
 
     const outcome = this.totalBalanceTypeValue('outcome');

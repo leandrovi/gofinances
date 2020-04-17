@@ -1,3 +1,5 @@
+// import AppError from '../errors/AppError';
+
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
 
@@ -14,7 +16,7 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute({ title, value, type }: Request): Transaction {
+  public execute({ title, value, type }: Request): Promise<Transaction> {
     const balance = this.transactionsRepository.getBalance();
 
     if (type === 'outcome' && value > balance.total) {
