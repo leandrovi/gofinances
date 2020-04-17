@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository } from 'typeorm';
 
 import Transaction from '../models/Transaction';
 
@@ -22,10 +22,6 @@ class TransactionsRepository {
     this.transactions = [];
   }
 
-  public all(): Transaction[] {
-    return this.transactions;
-  }
-
   public async getBalance(): Promise<Balance> {
     const income = this.totalBalanceTypeValue('income');
 
@@ -40,14 +36,6 @@ class TransactionsRepository {
     };
 
     return balance;
-  }
-
-  public create({ title, value, type }: CreateTransactionDTO): Transaction {
-    const transaction = new Transaction({ title, value, type });
-
-    this.transactions.push(transaction);
-
-    return transaction;
   }
 
   private totalBalanceTypeValue(type: 'income' | 'outcome'): number {
