@@ -1,32 +1,48 @@
-// import AppError from '../errors/AppError';
+import { getCustomRepository } from 'typeorm';
+
+import AppError from '../errors/AppError';
+
+import Transaction from '../models/Transaction';
 
 import TransactionsRepository from '../repositories/TransactionsRepository';
-import Transaction from '../models/Transaction';
+import CategoriesRepository from '../repositories/CategoriesRepository';
 
 interface Request {
   title: string;
   value: number;
   type: 'income' | 'outcome';
+  category: string;
 }
 
 class CreateTransactionService {
-  private transactionsRepository: TransactionsRepository;
+  public async execute({
+    title,
+    value,
+    type,
+    category: categoryTitle,
+  }: Request): Promise<Transaction> {
+    const transactionsRepository = getCustomRepository(TransactionsRepository);
+    const categoriesRepository = getCustomRepository(CategoriesRepository);
 
-  constructor(transactionsRepository: TransactionsRepository) {
-    this.transactionsRepository = transactionsRepository;
-  }
+    const category = await categoriesRepository.findByTitle(categoryTitle);
 
-  public execute({ title, value, type }: Request): Promise<Transaction> {
-    const balance = this.transactionsRepository.getBalance();
-
-    if (type === 'outcome' && value > balance.total) {
-      throw Error('An outcome higher than total balance is not permitted');
+    if (!category) {
+      throw new AppError('This category does not exists');
     }
 
-    const transaction = this.transactionsRepository.create({
+    const balance = await transactionsRepository.getBalance();
+
+    if (type === 'outcome' && value > balance.total) {
+      throw new AppError(
+        'An outcome higher than total balance is not permitted',
+      );
+    }
+
+    const transaction = transactionsRepository.create({
       title,
-      value,
       type,
+      value,
+      category_id: category.id,
     });
 
     return transaction;

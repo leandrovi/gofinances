@@ -24,6 +24,9 @@ class Transaction {
   @Column('decimal', { precision: 5, scale: 2 })
   value: number;
 
+  @Column()
+  category_id: string;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
