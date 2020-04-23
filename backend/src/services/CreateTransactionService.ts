@@ -24,6 +24,12 @@ class CreateTransactionService {
     const transactionsRepository = getCustomRepository(TransactionsRepository);
     const categoriesRepository = getRepository(Category);
 
+    const { total } = await transactionsRepository.getBalance();
+
+    if (type === 'outcome' && value > total) {
+      throw new AppError('You do not have enough balance');
+    }
+
     let transactionCategory = await categoriesRepository.findOne({
       where: {
         title: categoryTitle,
@@ -36,14 +42,6 @@ class CreateTransactionService {
       });
 
       await categoriesRepository.save(transactionCategory);
-    }
-
-    const balance = await transactionsRepository.getBalance();
-
-    if (type === 'outcome' && value > balance.total) {
-      throw new AppError(
-        'An outcome higher than total balance is not permitted',
-      );
     }
 
     const transaction = transactionsRepository.create({
