@@ -4,6 +4,10 @@ interface ContainerProps {
   size?: 'small' | 'large';
 }
 
+interface MenuItemSelectedProps {
+  active?: boolean;
+}
+
 export const Container = styled.div<ContainerProps>`
   background: #5636d3;
   padding: 30px 0;
@@ -22,6 +26,7 @@ export const Container = styled.div<ContainerProps>`
         text-decoration: none;
         font-size: 16px;
         transition: opacity 0.2s;
+        position: relative;
 
         & + a {
           margin-left: 32px;
@@ -33,4 +38,14 @@ export const Container = styled.div<ContainerProps>`
       }
     }
   }
+`;
+
+export const MenuItemSelected = styled.span<MenuItemSelectedProps>`
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ff872c;
+  display: ${props => (props.active ? 'inline' : 'none')};
 `;
