@@ -9,6 +9,7 @@ import api from '../../services/api';
 import Header from '../../components/Header';
 
 import formatValue from '../../utils/formatValue';
+import formatDate from '../../utils/formatDate';
 
 import { Container, CardContainer, Card, TableContainer } from './styles';
 
@@ -30,12 +31,35 @@ interface Balance {
 }
 
 const Dashboard: React.FC = () => {
-  // const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // const [balance, setBalance] = useState<Balance>({} as Balance);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [balance, setBalance] = useState<Balance>({} as Balance);
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
-      // TODO
+      const response = await api.get('transactions');
+
+      const transactionsData = response.data.transactions.map(
+        (transaction: Transaction) => {
+          const localDate = new Date(transaction.created_at);
+
+          const formattedValue = formatValue(transaction.value);
+          const formattedDate = formatDate(localDate);
+
+          return {
+            ...transaction,
+            formattedValue,
+            formattedDate,
+          };
+        },
+      );
+
+      const balanceData = response.data.balance;
+
+      console.log(transactionsData);
+      console.log(balanceData);
+
+      // setTransactions(response.data.transactions);
+      // setBalance();
     }
 
     loadTransactions();
